@@ -38,7 +38,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
       setProducts(products as Products)
     } catch (error) {
       toast.error({
-        message: 'Erro ao buscar produtos.',
+        message: 'Erro ao listar produtos.',
       })
     }
   }
@@ -54,7 +54,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
       setIsModalOpen(true)
     } catch (error) {
       toast.error({
-        message: 'Erro ao buscar detalhes do produto.',
+        message: 'Erro ao listar detalhes do produto.',
       })
     }
   }
@@ -74,7 +74,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
       borderRadius="md"
     >
       <Text fontSize="xl" fontWeight="bold" mb="2rem">
-        Lista de Produtos
+        Listar Produtos
       </Text>
       <Table variant="simple">
         <Thead>
@@ -104,9 +104,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
               <Td>{product.price}</Td>
               <Td>{product.rating}</Td>
               <Td>
-                <Button onClick={() => openModal(product.id)}>
-                  Ver Detalhes
-                </Button>
+                <Button onClick={() => openModal(product.id)}>Detalhes</Button>
               </Td>
             </Tr>
           ))}

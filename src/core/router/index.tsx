@@ -4,7 +4,7 @@ import {
   MakeDashboardFactory,
   MakeLoginFactory,
   MakeProductListingFactory,
-  MakeUserRegistrationFactory,
+  MakeProductRegistrationFactory,
 } from 'core/factories'
 import Route from './routes'
 
@@ -12,8 +12,16 @@ const Routes = () => (
   <Switch>
     <Route exact path="/" component={MakeLoginFactory} />
     <Route path="/dashboard" component={MakeDashboardFactory} isPrivate />
-    <Route path="/products" component={MakeProductListingFactory} isPrivate />
-    <Route path="/sign-up" component={MakeUserRegistrationFactory} />
+    <Route
+      path="/listar-produtos"
+      component={MakeProductListingFactory}
+      isPrivate
+    />
+    <Route
+      path="/cadastrar-produtos"
+      component={MakeProductRegistrationFactory}
+      isPrivate
+    />
     <Route path="/" component={MakeLoginFactory} />
   </Switch>
 )

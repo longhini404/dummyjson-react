@@ -12,8 +12,8 @@ import { Authentication as AuthenticationModel } from 'domain/models'
 import { Authentication } from 'domain/interfaces/authentication'
 
 const schema = yup.object().shape({
-  login: yup.string().required('Please enter an email'),
-  password: yup.string().required('please enter a password'),
+  username: yup.string().required('Required'),
+  password: yup.string().required('Required'),
 })
 
 type LoginProps = {
@@ -65,8 +65,8 @@ const Login = ({ authentication }: LoginProps) => {
         <Input
           mt="8rem"
           autoFocus
-          placeholder="E-mail"
-          data-testid="email-input"
+          placeholder="Usuário"
+          data-testid="username-input"
           error={errors.username?.message}
           {...register('username')}
         />
@@ -96,18 +96,6 @@ const Login = ({ authentication }: LoginProps) => {
           >
             Login
           </Button>
-          <Link
-            as={ReactLink}
-            to="/sign-up"
-            color="white"
-            fontWeight="500"
-            _hover={{
-              filter: 'brightness(1.1)',
-              transition: '0.2s',
-            }}
-          >
-            <Flex direction="row">Sign up</Flex>
-          </Link>
         </Flex>
       </Flex>
     </Flex>
