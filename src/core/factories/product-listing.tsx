@@ -1,12 +1,20 @@
 import React from 'react'
 import { ProductListing } from 'pages'
 import { ToastService } from 'data/services/toast'
-import { ReadProductsService } from 'data/services/products'
+import {
+  DeleteProductService,
+  ReadProductsService,
+} from 'data/services/products'
 
 export const MakeProductListingFactory = () => {
+  const deleteProductService = new DeleteProductService()
   const readProductsService = new ReadProductsService()
   const toastService = new ToastService()
   return (
-    <ProductListing readProducts={readProductsService} toast={toastService} />
+    <ProductListing
+      deleteProduct={deleteProductService}
+      readProducts={readProductsService}
+      toast={toastService}
+    />
   )
 }

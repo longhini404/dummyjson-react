@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
 import { Toast } from 'domain/interfaces/toast'
-import { ReadProducts } from 'domain/interfaces/products'
+import { DeleteProduct, ReadProducts } from 'domain/interfaces/products'
 import {
   Box,
   Flex,
@@ -24,11 +24,16 @@ import { Button } from 'components/button'
 import { useHistory } from 'react-router-dom'
 
 type ProductListingProps = {
+  deleteProduct: DeleteProduct
   readProducts: ReadProducts
   toast: Toast
 }
 
-const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
+const ProductListing = ({
+  readProducts,
+  deleteProduct,
+  toast,
+}: ProductListingProps) => {
   const history = useHistory()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [getProducts, setProducts] = useState<Products>()
@@ -36,6 +41,22 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
 
   const handleEdit = (id: number) => {
     history.push(`/cadastrar-produtos?id=${id}`)
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteProduct.delete(id)
+      toast.success({
+        message: 'Produto deletado com sucesso',
+        duration: 5000,
+      })
+      fetchProducts()
+    } catch (error) {
+      toast.error({
+        message: 'Erro ao deletar produto.',
+        duration: 5000,
+      })
+    }
   }
 
   const fetchProducts = async () => {
@@ -119,6 +140,9 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
                   <Button onClick={() => handleEdit(product.id)} my="0.25rem">
                     Editar
                   </Button>
+                  <Button onClick={() => handleDelete(product.id)} my="0.25rem">
+                    Deletar
+                  </Button>
                 </Flex>
               </Td>
             </Tr>
@@ -157,8 +181,25 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
               </>
             )}
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={closeModal}>Fechar</Button>
+          <ModalFooter justifyContent="space-between">
+            <Button
+              mx="1rem"
+              onClick={() => handleEdit(getSelectedProduct?.id || 0)}
+            >
+              Editar
+            </Button>
+            <Button
+              mx="1rem"
+              onClick={async () => {
+                handleDelete(getSelectedProduct?.id || 0)
+                closeModal()
+              }}
+            >
+              Deletar
+            </Button>
+            <Button mx="1rem" onClick={closeModal}>
+              Fechar
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
