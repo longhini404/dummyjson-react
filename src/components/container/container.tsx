@@ -7,7 +7,7 @@ const Container = ({ children, ...rest }: BoxProps) => (
       base: 'full',
       sm: '42rem',
       md: '60rem',
-      lg: '90rem',
+      lg: '80rem',
       xl: '100rem',
       xxl: '160rem',
     }}

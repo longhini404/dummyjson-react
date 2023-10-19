@@ -4,6 +4,8 @@ import { DeleteProduct, ReadProducts } from 'domain/interfaces/products'
 import {
   Box,
   Flex,
+  Grid,
+  GridItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,17 +13,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
 } from '@chakra-ui/react'
 import { Product, Products } from 'domain/models'
 import { Button } from 'components/button'
 import { useHistory } from 'react-router-dom'
+import { StarIcon } from '@chakra-ui/icons'
 
 type ProductListingProps = {
   deleteProduct: DeleteProduct
@@ -93,62 +90,65 @@ const ProductListing = ({
   }
 
   return (
-    <Box
-      w="80%"
-      p="2rem"
-      m="4rem"
-      mx="auto"
-      bg="gray.700"
-      boxShadow="md"
-      borderRadius="md"
-    >
+    <Box w="90%" p="2rem" m="4rem" mx="auto" bg="gray.700" borderRadius="md">
       <Text fontSize="xl" fontWeight="bold" mb="2rem">
         Listar Produtos
       </Text>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>ID</Th>
-            <Th>Thumbnail</Th>
-            <Th>Título</Th>
-            <Th>Descrição</Th>
-            <Th>Preço</Th>
-            <Th>Classificação</Th>
-            <Th>Ações</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {getProducts?.products.map(product => (
-            <Tr key={product.id}>
-              <Td>{product.id}</Td>
-              <Td>
-                <img
-                  src={product.thumbnail}
-                  alt={`Thumbnail de ${product.title}`}
-                  style={{ width: '5rem', height: '5rem' }}
-                />
-              </Td>
-              <Td>{product.title}</Td>
-              <Td>{product.description}</Td>
-              <Td>{product.price}</Td>
-              <Td>{product.rating}</Td>
-              <Td>
-                <Flex flexDirection="column">
-                  <Button onClick={() => openModal(product.id)} my="0.25rem">
-                    Detalhes
-                  </Button>
-                  <Button onClick={() => handleEdit(product.id)} my="0.25rem">
-                    Editar
-                  </Button>
-                  <Button onClick={() => handleDelete(product.id)} my="0.25rem">
-                    Deletar
-                  </Button>
-                </Flex>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+      <Grid
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+          lg: 'repeat(4, 1fr)',
+        }}
+        gap={4}
+      >
+        {getProducts?.products.map(product => (
+          <GridItem key={product.id}>
+            <Box
+              p="2"
+              bg="gray.800"
+              height="20rem"
+              boxShadow="md"
+              borderRadius="md"
+            >
+              <Text
+                fontSize="lg"
+                cursor="pointer"
+                fontWeight="bold"
+                onClick={() => openModal(product.id)}
+              >
+                {product.title.length > 16
+                  ? `${product.title.substring(0, 16)}...`
+                  : product.title}
+              </Text>
+              <img
+                src={product.thumbnail}
+                style={{
+                  width: '20rem',
+                  height: '10rem',
+                  borderRadius: '0.25rem',
+                }}
+                alt={`Thumbnail de ${product.title}`}
+              />
+              {Array.from({ length: product.rating }).map(() => (
+                <StarIcon color="yellow.400" mt="0.25rem" />
+              ))}
+              <Text fontSize="lg" fontWeight="bold" mt="0.25rem">
+                R$ {product.price}
+              </Text>
+              <Flex justifyContent="center" mt="0.5rem">
+                <Button mx="0.5rem" onClick={() => handleEdit(product.id)}>
+                  Editar
+                </Button>
+                <Button mx="0.5rem" onClick={() => handleDelete(product.id)}>
+                  Deletar
+                </Button>
+              </Flex>
+            </Box>
+          </GridItem>
+        ))}
+      </Grid>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalOverlay />
@@ -160,7 +160,7 @@ const ProductListing = ({
               <>
                 <Text>Título: {getSelectedProduct.title}</Text>
                 <Text>Descrição: {getSelectedProduct.description}</Text>
-                <Text>Preço: {getSelectedProduct.price}</Text>
+                <Text>Preço: R$ {getSelectedProduct.price}</Text>
                 <Text>Classificação: {getSelectedProduct.rating}</Text>
                 <Text>Estoque: {getSelectedProduct.stock}</Text>
                 <Text>Marca: {getSelectedProduct.brand}</Text>
@@ -181,25 +181,26 @@ const ProductListing = ({
               </>
             )}
           </ModalBody>
-          <ModalFooter justifyContent="space-between">
-            <Button
-              mx="1rem"
-              onClick={() => handleEdit(getSelectedProduct?.id || 0)}
-            >
-              Editar
-            </Button>
-            <Button
-              mx="1rem"
-              onClick={async () => {
-                handleDelete(getSelectedProduct?.id || 0)
-                closeModal()
-              }}
-            >
-              Deletar
-            </Button>
-            <Button mx="1rem" onClick={closeModal}>
-              Fechar
-            </Button>
+          <ModalFooter justifyContent="center">
+            {getSelectedProduct && (
+              <Button
+                mx="0.5rem"
+                onClick={() => handleEdit(getSelectedProduct.id)}
+              >
+                Editar
+              </Button>
+            )}
+            {getSelectedProduct && (
+              <Button
+                mx="0.5rem"
+                onClick={async () => {
+                  handleDelete(getSelectedProduct.id)
+                  closeModal()
+                }}
+              >
+                Deletar
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

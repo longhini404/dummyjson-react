@@ -111,9 +111,7 @@ const ProductRegistration = ({
 
   return (
     <Flex
-      p={8}
-      m={16}
-      w="80vw"
+      pt="4rem"
       as="form"
       direction="column"
       onSubmit={handleSubmit(onSubmit)}

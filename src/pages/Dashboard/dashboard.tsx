@@ -3,7 +3,7 @@ import { Text } from 'components/text'
 
 const Dashboard = () => {
   return (
-    <Text gRole="title" mt="2rem">
+    <Text gRole="title" p="2rem">
       Bem-vindo
     </Text>
   )

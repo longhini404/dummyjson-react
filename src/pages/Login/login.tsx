@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Flex, Spacer, Text } from '@chakra-ui/react'
 import { Button } from 'components/button'
-import { Input, InputPassword } from 'components/input'
+import { Input } from 'components/input'
 import { getLoadingInfo } from 'core/store/modules/auth/selector'
 import { Authentication as AuthenticationModel } from 'domain/models'
 import { Authentication } from 'domain/interfaces/authentication'
@@ -39,8 +39,8 @@ const Login = ({ authentication }: LoginProps) => {
 
   return (
     <Flex
-      p={8}
-      m={16}
+      p="2rem"
+      m="4rem"
       bg="gray.600"
       boxShadow="md"
       direction="column"
@@ -67,14 +67,14 @@ const Login = ({ authentication }: LoginProps) => {
         </Text>
         <Input
           mt="2rem"
-          autoFocus
           placeholder="Username"
           data-testid="username-input"
           error={errors.username?.message}
           {...register('username')}
         />
         <Spacer my="1rem" />
-        <InputPassword
+        <Input
+          type="password"
           placeholder="Password"
           data-testid="password-input"
           error={errors.password?.message}
