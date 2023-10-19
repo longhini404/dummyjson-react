@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
 import { Toast } from 'domain/interfaces/toast'
-import { ReadProducts as ReadProductsInterface } from 'domain/interfaces/products'
+import { ReadProducts } from 'domain/interfaces/products'
 import {
   Box,
   Flex,
@@ -21,16 +21,22 @@ import {
 } from '@chakra-ui/react'
 import { Product, Products } from 'domain/models'
 import { Button } from 'components/button'
+import { useHistory } from 'react-router-dom'
 
 type ProductListingProps = {
-  readProducts: ReadProductsInterface
+  readProducts: ReadProducts
   toast: Toast
 }
 
 const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
+  const history = useHistory()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [getProducts, setProducts] = useState<Products>()
-  const [selectedProduct, setSelectedProduct] = useState<Product>()
+  const [getSelectedProduct, setSelectedProduct] = useState<Product>()
+
+  const handleEdit = (id: number) => {
+    history.push(`/cadastrar-produtos?id=${id}`)
+  }
 
   const fetchProducts = async () => {
     try {
@@ -39,6 +45,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
     } catch (error) {
       toast.error({
         message: 'Erro ao listar produtos.',
+        duration: 5000,
       })
     }
   }
@@ -55,6 +62,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
     } catch (error) {
       toast.error({
         message: 'Erro ao listar detalhes do produto.',
+        duration: 5000,
       })
     }
   }
@@ -80,7 +88,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
         <Thead>
           <Tr>
             <Th>ID</Th>
-            <Th>TThumbnail</Th>
+            <Th>Thumbnail</Th>
             <Th>Título</Th>
             <Th>Descrição</Th>
             <Th>Preço</Th>
@@ -96,7 +104,7 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
                 <img
                   src={product.thumbnail}
                   alt={`Thumbnail de ${product.title}`}
-                  style={{ width: '50px', height: '50px' }}
+                  style={{ width: '5rem', height: '5rem' }}
                 />
               </Td>
               <Td>{product.title}</Td>
@@ -104,7 +112,14 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
               <Td>{product.price}</Td>
               <Td>{product.rating}</Td>
               <Td>
-                <Button onClick={() => openModal(product.id)}>Detalhes</Button>
+                <Flex flexDirection="column">
+                  <Button onClick={() => openModal(product.id)} my="0.25rem">
+                    Detalhes
+                  </Button>
+                  <Button onClick={() => handleEdit(product.id)} my="0.25rem">
+                    Editar
+                  </Button>
+                </Flex>
               </Td>
             </Tr>
           ))}
@@ -117,19 +132,19 @@ const ProductListing = ({ readProducts, toast }: ProductListingProps) => {
           <ModalHeader>Detalhes do Produto</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {selectedProduct && (
+            {getSelectedProduct && (
               <>
-                <Text>Título: {selectedProduct.title}</Text>
-                <Text>Descrição: {selectedProduct.description}</Text>
-                <Text>Preço: {selectedProduct.price}</Text>
-                <Text>Classificação: {selectedProduct.rating}</Text>
-                <Text>Estoque: {selectedProduct.stock}</Text>
-                <Text>Marca: {selectedProduct.brand}</Text>
-                <Text>Categoria: {selectedProduct.category}</Text>
+                <Text>Título: {getSelectedProduct.title}</Text>
+                <Text>Descrição: {getSelectedProduct.description}</Text>
+                <Text>Preço: {getSelectedProduct.price}</Text>
+                <Text>Classificação: {getSelectedProduct.rating}</Text>
+                <Text>Estoque: {getSelectedProduct.stock}</Text>
+                <Text>Marca: {getSelectedProduct.brand}</Text>
+                <Text>Categoria: {getSelectedProduct.category}</Text>
 
                 <Text>Imagens:</Text>
                 <Flex wrap="wrap">
-                  {selectedProduct.images.map((image, index) => (
+                  {getSelectedProduct.images.map((image, index) => (
                     <Box m={2}>
                       <img
                         src={image}

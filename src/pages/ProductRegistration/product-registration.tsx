@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Flex } from '@chakra-ui/react'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -6,9 +6,14 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { Text } from 'components/text'
 import { Button } from 'components/button'
 import { Input } from 'components/input'
-import { CreateProduct } from 'domain/interfaces/products'
+import {
+  CreateProduct,
+  ReadProducts,
+  UpdateProduct,
+} from 'domain/interfaces/products'
 import { Toast } from 'domain/interfaces/toast'
 import { Product } from 'domain/models'
+import { useHistory } from 'react-router-dom'
 
 const schema = yup.object().shape({
   title: yup.string().required('Required'),
@@ -24,15 +29,25 @@ const schema = yup.object().shape({
 
 type ProductRegistrationProps = {
   createProduct: CreateProduct
+  readProducts: ReadProducts
+  updateProduct: UpdateProduct
   toast: Toast
+  id?: number
 }
 
 const ProductRegistration = ({
   createProduct,
+  readProducts,
+  updateProduct,
   toast,
+  id,
 }: ProductRegistrationProps) => {
+  const history = useHistory()
+  const [getProduct, setProduct] = useState<Product>()
+
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<Product>({
@@ -40,16 +55,55 @@ const ProductRegistration = ({
     resolver: yupResolver(schema),
   })
 
+  if (id) {
+    const fetchProduct = async (idProduct: number) => {
+      try {
+        const product = await readProducts.read(idProduct)
+        setProduct(product as Product)
+      } catch (error) {
+        toast.error({
+          message: 'Erro ao buscar produto.',
+        })
+      }
+    }
+
+    if (getProduct) {
+      setValue('title', getProduct.title)
+      setValue('description', getProduct.description)
+      setValue('price', getProduct.price)
+      setValue('discountPercentage', getProduct.discountPercentage)
+      setValue('rating', getProduct.rating)
+      setValue('stock', getProduct.stock)
+      setValue('brand', getProduct.brand)
+      setValue('category', getProduct.category)
+      setValue('thumbnail', getProduct.thumbnail)
+      setValue('images', getProduct.images)
+    }
+
+    useEffect(() => {
+      fetchProduct(id)
+    }, [])
+  }
+
   const onSubmit: SubmitHandler<Product> = async product => {
     try {
-      await createProduct.create(product)
-      toast.success({
-        message: 'Produto cadastrado com sucesso',
-        duration: 5000,
-      })
+      if (id) {
+        await updateProduct.update(id, product)
+        toast.success({
+          message: 'Produto atualizado com sucesso',
+          duration: 5000,
+        })
+      } else {
+        await createProduct.create(product)
+        toast.success({
+          message: 'Produto cadastrado com sucesso',
+          duration: 5000,
+        })
+      }
+      history.push('/listar-produtos')
     } catch (error: any) {
       toast.error({
-        message: 'Erro ao cadastrar produto.',
+        message: 'Erro ao cadastrar o produto.',
         duration: 5000,
       })
     }
@@ -100,7 +154,6 @@ const ProductRegistration = ({
               <Flex flex={2} mr={{ base: '0', sm: '1rem' }} minW="13.75rem">
                 <Input
                   placeholder="Preço"
-                  type="number"
                   data-testid="price-input"
                   error={errors.price?.message}
                   {...register('price')}
@@ -109,7 +162,6 @@ const ProductRegistration = ({
               <Flex flex={2} minW="13.75rem">
                 <Input
                   placeholder="Porcentagem de desconto"
-                  type="number"
                   data-testid="discountPercentage-input"
                   error={errors.discountPercentage?.message}
                   {...register('discountPercentage')}
@@ -120,7 +172,6 @@ const ProductRegistration = ({
               <Flex flex={2} mr={{ base: '0', sm: '1rem' }} minW="13.75rem">
                 <Input
                   placeholder="Classificação"
-                  type="number"
                   data-testid="rating-input"
                   error={errors.rating?.message}
                   {...register('rating')}
@@ -129,7 +180,6 @@ const ProductRegistration = ({
               <Flex flex={2} minW="13.75rem">
                 <Input
                   placeholder="Estoque"
-                  type="number"
                   data-testid="stock-input"
                   error={errors.stock?.message}
                   {...register('stock')}
@@ -184,9 +234,9 @@ const ProductRegistration = ({
                 h="3.25rem"
                 type="submit"
                 isLoading={isSubmitting}
+                backgroundColor="gray.600"
                 data-testid="submit-button"
                 disabled={!isDirty || isSubmitting}
-                backgroundColor="gray.600"
                 _hover={{
                   filter: 'brightness(1.1)',
                   transition: '0.2s',
