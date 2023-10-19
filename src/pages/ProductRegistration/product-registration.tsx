@@ -13,7 +13,7 @@ import {
 } from 'domain/interfaces/products'
 import { Toast } from 'domain/interfaces/toast'
 import { Product } from 'domain/models'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 const schema = yup.object().shape({
   title: yup.string().required('Required'),
@@ -230,6 +230,19 @@ const ProductRegistration = ({
               justify="space-between"
               data-testid="buttons-flexbox"
             >
+              <Link to="/listar-produtos">
+                <Button
+                  h="3.25rem"
+                  backgroundColor="gray.600"
+                  _hover={{
+                    filter: 'brightness(1.1)',
+                    transition: '0.2s',
+                  }}
+                  color="white"
+                >
+                  Voltar
+                </Button>
+              </Link>
               <Button
                 h="3.25rem"
                 type="submit"
