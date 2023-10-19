@@ -1,10 +1,9 @@
 import React from 'react'
 import * as yup from 'yup'
 import { useSelector } from 'react-redux'
-import { Link as ReactLink } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Flex, Link, Spacer } from '@chakra-ui/react'
+import { Flex, Spacer, Text } from '@chakra-ui/react'
 import { Button } from 'components/button'
 import { Input, InputPassword } from 'components/input'
 import { getLoadingInfo } from 'core/store/modules/auth/selector'
@@ -60,27 +59,30 @@ const Login = ({ authentication }: LoginProps) => {
         w={{ base: '100%' }}
         data-testid="login-form"
         onSubmit={handleSubmit(onSubmit)}
-        mt={{ base: '1rem', md: '1.5rem', lg: '1.5rem' }}
       >
+        <Text fontSize="lg" fontWeight="bold" textAlign="center">
+          kminchelle
+          <br />
+          0lelplR
+        </Text>
         <Input
-          mt="8rem"
+          mt="2rem"
           autoFocus
-          placeholder="Usuário"
+          placeholder="Username"
           data-testid="username-input"
           error={errors.username?.message}
           {...register('username')}
         />
-        <Spacer my="1" />
+        <Spacer my="1rem" />
         <InputPassword
           placeholder="Password"
           data-testid="password-input"
           error={errors.password?.message}
           {...register('password')}
         />
-        <Flex mt="1rem" display="column" w="100%">
+        <Flex display="column" w="100%">
           <Button
-            mt="2rem"
-            mb="1rem"
+            my="2rem"
             h="3.375rem"
             type="submit"
             color="white"
