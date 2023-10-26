@@ -1,8 +1,8 @@
 import { api } from 'core/services'
-import { DeleteProduct } from 'domain/interfaces/products'
+import { CreateProduct } from 'domain/interfaces/products'
 
-export class DeleteProductService implements DeleteProduct {
-  async delete(productId: number): Promise<void> {
-    await api.delete(`/products/${productId}`)
+export class CreateProductService implements CreateProduct {
+  async create(product: CreateProduct.Params): Promise<void> {
+    await api.post(`/products/add`, product)
   }
 }
