@@ -43,16 +43,15 @@ const Login = ({ authentication }: LoginProps) => {
       m="4rem"
       bg="gray.600"
       boxShadow="md"
+      borderRadius={5}
       direction="column"
       alignItems="center"
       textColor="gray.700"
-      w={{ base: '28rem' }}
-      borderRadius="0.75rem"
+      w={{ base: '30rem' }}
       justifyContent="center"
     >
       <Flex
         as="form"
-        px="1.25rem"
         maxW="28rem"
         direction="column"
         alignItems="center"

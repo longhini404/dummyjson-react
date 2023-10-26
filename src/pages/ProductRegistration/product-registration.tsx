@@ -24,7 +24,6 @@ const schema = yup.object().shape({
   stock: yup.number().required('Required'),
   brand: yup.string().required('Required'),
   category: yup.string().required('Required'),
-  thumbnail: yup.string().required('Required'),
 })
 
 type ProductRegistrationProps = {
@@ -49,7 +48,7 @@ const ProductRegistration = ({
     register,
     setValue,
     handleSubmit,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<Product>({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
@@ -76,8 +75,6 @@ const ProductRegistration = ({
       setValue('stock', getProduct.stock)
       setValue('brand', getProduct.brand)
       setValue('category', getProduct.category)
-      setValue('thumbnail', getProduct.thumbnail)
-      setValue('images', getProduct.images)
     }
 
     useEffect(() => {
@@ -202,25 +199,6 @@ const ProductRegistration = ({
                 />
               </Flex>
             </Flex>
-            <Flex justify="flex-start" w="100%" mb="0.5rem">
-              <Flex flex={2} mr={{ base: '0', sm: '1rem' }} minW="13.75rem">
-                <Input
-                  placeholder="URL da Thumbnail"
-                  data-testid="thumbnail-input"
-                  error={errors.thumbnail?.message}
-                  {...register('thumbnail')}
-                />
-              </Flex>
-            </Flex>
-            <Flex justify="flex-start" w="100%" mb="1rem">
-              <Flex flex={2} minW="13.75rem">
-                <Input
-                  placeholder="URL das Imagens (separadas por vírgula)"
-                  data-testid="images-input"
-                  {...register('images')}
-                />
-              </Flex>
-            </Flex>
             <Flex
               w="100%"
               mb="1rem"
@@ -244,15 +222,15 @@ const ProductRegistration = ({
               <Button
                 h="3.25rem"
                 type="submit"
+                color="white"
+                disabled={isSubmitting}
                 isLoading={isSubmitting}
                 backgroundColor="gray.600"
                 data-testid="submit-button"
-                disabled={!isDirty || isSubmitting}
                 _hover={{
                   filter: 'brightness(1.1)',
                   transition: '0.2s',
                 }}
-                color="white"
               >
                 Cadastrar
               </Button>

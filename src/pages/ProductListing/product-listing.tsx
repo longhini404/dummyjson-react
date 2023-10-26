@@ -4,8 +4,6 @@ import { DeleteProduct, ReadProducts } from 'domain/interfaces/products'
 import {
   Box,
   Flex,
-  Grid,
-  GridItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,12 +11,17 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Table,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
 } from '@chakra-ui/react'
 import { Product, Products } from 'domain/models'
 import { Button } from 'components/button'
 import { useHistory } from 'react-router-dom'
-import { StarIcon } from '@chakra-ui/icons'
 
 type ProductListingProps = {
   deleteProduct: DeleteProduct
@@ -90,65 +93,57 @@ const ProductListing = ({
   }
 
   return (
-    <Box w="90%" p="2rem" m="4rem" mx="auto" bg="gray.700" borderRadius="md">
+    <Box
+      w="80%"
+      p="2rem"
+      m="4rem"
+      mx="auto"
+      bg="gray.700"
+      boxShadow="md"
+      borderRadius="md"
+    >
       <Text fontSize="xl" fontWeight="bold" mb="2rem">
         Listar Produtos
       </Text>
-      <Grid
-        templateColumns={{
-          base: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(3, 1fr)',
-          lg: 'repeat(4, 1fr)',
-        }}
-        gap={4}
-      >
-        {getProducts?.products.map(product => (
-          <GridItem key={product.id}>
-            <Box
-              p="2"
-              bg="gray.800"
-              height="20rem"
-              boxShadow="md"
-              borderRadius="md"
-            >
-              <Text
-                fontSize="lg"
-                cursor="pointer"
-                fontWeight="bold"
-                onClick={() => openModal(product.id)}
-              >
-                {product.title.length > 16
-                  ? `${product.title.substring(0, 16)}...`
-                  : product.title}
-              </Text>
-              <img
-                src={product.thumbnail}
-                style={{
-                  width: '20rem',
-                  height: '10rem',
-                  borderRadius: '0.25rem',
-                }}
-                alt={`Thumbnail de ${product.title}`}
-              />
-              {Array.from({ length: product.rating }).map(() => (
-                <StarIcon color="yellow.400" mt="0.25rem" />
-              ))}
-              <Text fontSize="lg" fontWeight="bold" mt="0.25rem">
-                R$ {product.price}
-              </Text>
-              <Flex justifyContent="center" mt="0.5rem">
-                <Button mx="0.5rem" onClick={() => handleEdit(product.id)}>
-                  Editar
-                </Button>
-                <Button mx="0.5rem" onClick={() => handleDelete(product.id)}>
-                  Deletar
-                </Button>
-              </Flex>
-            </Box>
-          </GridItem>
-        ))}
-      </Grid>
+      {getProducts?.products.length === 0 ? (
+        <Text>Nenhum produto cadastrado.</Text>
+      ) : (
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>ID</Th>
+              <Th>Título</Th>
+              <Th>Descrição</Th>
+              <Th>Ações</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {getProducts?.products.map(product => (
+              <Tr key={product.id}>
+                <Td>{product.id}</Td>
+                <Td>{product.title}</Td>
+                <Td>{product.description}</Td>
+                <Td>
+                  <Flex flexDirection="column">
+                    <Button onClick={() => openModal(product.id)} my="0.25rem">
+                      Detalhes
+                    </Button>
+                    <Button onClick={() => handleEdit(product.id)} my="0.25rem">
+                      Editar
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(product.id)}
+                      my="0.25rem"
+                    >
+                      Deletar
+                    </Button>
+                  </Flex>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )}
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalOverlay />
@@ -165,19 +160,6 @@ const ProductListing = ({
                 <Text>Estoque: {getSelectedProduct.stock}</Text>
                 <Text>Marca: {getSelectedProduct.brand}</Text>
                 <Text>Categoria: {getSelectedProduct.category}</Text>
-
-                <Text>Imagens:</Text>
-                <Flex wrap="wrap">
-                  {getSelectedProduct.images.map((image, index) => (
-                    <Box m={2}>
-                      <img
-                        src={image}
-                        alt={`Imagem ${index}`}
-                        style={{ maxWidth: '10rem' }}
-                      />
-                    </Box>
-                  ))}
-                </Flex>
               </>
             )}
           </ModalBody>
